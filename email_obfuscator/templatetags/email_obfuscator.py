@@ -9,9 +9,17 @@ register = template.Library()
 def obfuscate_html_entity(value):
     return ''.join(f'&#{ord(c)};' for c in value)
 
+def obfuscate_js_concatenation(value):
+    """
+    https://spencermortensen.com/articles/email-obfuscation/#link-concatenation
+    """
+    # todo
+    return value
+
 
 METHODS = {
     'html_entity': obfuscate_html_entity,
+    'js_concatenation': obfuscate_js_concatenation
 }
 
 
