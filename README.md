@@ -19,6 +19,15 @@ INSTALLED_APPS = (
 )
 ```
 
+Configuration
+-------------
+
+Choose the obfuscation method in `settings.py`:
+
+```python
+EMAIL_OBFUSCATOR_METHOD = 'html_entity'  # default
+```
+
 Usage
 -----
 

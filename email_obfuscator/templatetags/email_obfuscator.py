@@ -1,16 +1,33 @@
 from django import template
+from django.conf import settings
 from django.template.defaultfilters import stringfilter
 from django.utils.safestring import mark_safe
 
 register = template.Library()
 
+
+def obfuscate_html_entity(value):
+    return ''.join(f'&#{ord(c)};' for c in value)
+
+
+METHODS = {
+    'html_entity': obfuscate_html_entity,
+}
+
+
 def obfuscate_string(value):
-    return ''.join(['&#{0:s};'.format(str(ord(char))) for char in value])
+    method = getattr(settings, 'EMAIL_OBFUSCATOR_METHOD', 'html_entity')
+    func = METHODS.get(method)
+    if func is None:
+        raise ValueError(f'Unknown EMAIL_OBFUSCATOR_METHOD: {method!r}')
+    return func(value)
+
 
 @register.filter
 @stringfilter
 def obfuscate(value):
     return mark_safe(obfuscate_string(value))
+
 
 @register.filter
 @stringfilter
